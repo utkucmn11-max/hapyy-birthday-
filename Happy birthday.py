@@ -1,84 +1,113 @@
 import streamlit as st
 import time
 
-# Sayfa Genişliği ve Başlık
-st.set_page_config(page_title="Mutlu Yıllar!", page_icon="✨", layout="centered")
+# Sayfa Konfigürasyonu
+st.set_page_config(
+    page_title="Mutlu Yıllar | Özel Kutlama",
+    page_icon="🎁",
+    layout="centered"
+)
 
-# Profesyonel Görünüm için CSS Dokunuşları
+# Gelişmiş CSS (Profesyonel Arayüz Tasarımı)
 st.markdown("""
     <style>
-    /* Arka plan ve genel yazı tipi */
-    .main {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Poppins', sans-serif;
     }
+
     .stApp {
-        background: transparent;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
-    
-    /* Kart tasarımı */
-    .birthday-card {
-        background-color: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+
+    .main-card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 50px;
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         text-align: center;
-        border-top: 5px solid #FF4B4B;
+        margin-top: 20px;
+    }
+
+    .celebration-title {
+        background: -webkit-linear-gradient(#764ba2, #667eea);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+        font-size: 3.5rem;
+        margin-bottom: 10px;
+    }
+
+    .stButton>button {
+        background: linear-gradient(90deg, #FF416C 0%, #FF4B2B 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .stButton>button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(255, 75, 43, 0.3);
     }
     
-    h1 {
-        color: #1E1E1E;
-        font-family: 'Helvetica Neue', sans-serif;
-        font-weight: 700;
-    }
-    
-    .subtitle {
-        color: #555;
+    .name-input input {
+        border-radius: 15px !important;
+        text-align: center;
         font-size: 1.2rem;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# Başlık Kısmı
-st.markdown('<div class="birthday-card">', unsafe_allow_html=True)
-st.title("✨ Özel Bir Kutlama")
-st.markdown('<p class="subtitle">Bu sayfa bugün doğan o özel kişi için hazırlandı.</p>', unsafe_allow_html=True)
+# --- Arayüz Başlangıcı ---
+st.markdown('<div class="main-card">', unsafe_allow_html=True)
+
+st.markdown('<h1 style="color: #1E1E1E; font-size: 1.5rem; font-weight: 300;">Özel Bir Gün, Özel Bir Kutlama</h1>', unsafe_allow_html=True)
+st.markdown('<div class="celebration-title">HOŞ GELDİN</div>', unsafe_allow_html=True)
 
 # Giriş Alanı
-isim = st.text_input("", placeholder="Buraya ismini yazar mısın? 😊", help="Kimin doğum gününü kutluyoruz?")
+st.markdown('<div class="name-input">', unsafe_allow_html=True)
+isim = st.text_input("", placeholder="İsmini buraya yazarak başla...", label_visibility="collapsed")
+st.markdown('</div>', unsafe_allow_html=True)
 
 if isim:
-    st.divider()
-    if st.button(f"Hazırsan Tıkla, {isim}! 🎉"):
-        # Küçük bir yükleme efekti (Profesyonel hava katar)
-        with st.status("Senin için bir şeyler hazırlanıyor...", expanded=False) as status:
-            time.sleep(1)
-            st.write("Pastalar fırından çıktı...")
-            time.sleep(1)
-            st.write("Konfetiler dolduruldu...")
-            status.update(label="Her şey hazır!", state="complete", expanded=False)
+    st.write("")
+    if st.button("KUTLAMAYI AÇ ✨"):
+        # Profesyonel Yükleme Sekansı
+        progress_bar = st.progress(0)
+        for percent_complete in range(100):
+            time.sleep(0.01)
+            progress_bar.progress(percent_complete + 1)
         
         st.balloons()
         
-        # Kutlama Mesajı
+        # Kutlama İçeriği
         st.markdown(f"""
-            <div style="text-align: center; padding: 20px;">
-                <h1 style="font-size: 3rem; color: #FF4B4B;">İyi ki Doğdun {isim}! 🎂</h1>
-                <p style="font-size: 1.5rem; color: #333;">Yeni yaşın sana tüm güzellikleri beraberinde getirsin.</p>
-                <p style="font-style: italic; color: #777;">"Her günün bir kutlama tadında geçsin."</p>
+            <div style="margin-top: 30px;">
+                <h1 style="color: #1E1E1E; font-size: 2.5rem;">İyi ki Doğdun, <span style="color: #764ba2;">{isim}!</span> 🎂</h1>
+                <p style="color: #555; font-size: 1.1rem; line-height: 1.6;">
+                    Bugün senin günün. Yeni yaşının sana en az senin kadar güzel <br> 
+                    sürprizler, sonsuz mutluluk ve başarı getirmesini dilerim.
+                </p>
             </div>
         """, unsafe_allow_html=True)
         
-        # Şık bir görsel (Giphy üzerinden kaliteli bir kutlama)
-        st.image("https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", use_column_width=True)
+        # Profesyonel bir kutlama GIF'i (Veya Lottie linki)
+        st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif")
         
-        # İstersen buraya bir kutlama müziği ekleyebilirsin
-        # st.audio("muzik_linki.mp3")
+        # Şık bir ses efekti (Opsiyonel)
+        # st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Alt Bilgi
+# Footer
 st.markdown("""
-    <div style="text-align: center; margin-top: 50px; color: #888; font-size: 0.8rem;">
-        Sevgiyle hazırlandı • 2026
+    <div style="text-align: center; margin-top: 30px; color: rgba(255,255,255,0.7); font-size: 0.8rem; letter-spacing: 2px;">
+        DESIGNED BY UTKU • 2026
     </div>
 """, unsafe_allow_html=True)
