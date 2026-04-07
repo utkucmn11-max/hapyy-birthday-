@@ -1,141 +1,63 @@
 import streamlit as st
-import time
+import streamlit.components.v1 as components
 
-# Sayfa ayarları - Mobilde büyük görünmesi için 'wide' düzen
-st.set_page_config(page_title="Mutlu Yıllar!", page_icon="🎉", layout="wide")
+# Sayfa Ayarları
+st.set_page_config(page_title="Mutlu Yıllar!", layout="wide")
 
-# Session State ile sayfa kontrolü (Butona basınca sayfa değişimi için)
-if 'kutlama_basladi' not in st.session_state:
-    st.session_state.kutlama_basladi = False
+if 'kutlama' not in st.session_state:
+    st.session_state.kutlama = False
 
-# --- CSS TASARIMI ---
+# --- ÖZEL KONFETİ BİLEŞENİ ---
+# Bu fonksiyon, tarayıcının engellemeyeceği şekilde konfeti fırlatır
+def real_confetti():
+    confetti_js = """
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        function fire() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
+            });
+        }
+        // Sayfa her yüklendiğinde ve buton tıklandığında çalışması için
+        setTimeout(fire, 100); 
+    </script>
+    """
+    # scrolling=False ve height=0.1 ile "This is content" yazısını tamamen yok ediyoruz
+    return components.html(confetti_js, height=0.1, scrolling=False)
+
+# --- TASARIM ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700&display=swap');
-    
-    /* Hareketli Arka Plan */
-    .stApp {
-        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-        background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
-    }
-    @keyframes gradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    /* Giriş Kartı - Mobilde Büyük */
-    .intro-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 50px;
-        border-radius: 30px;
-        border: 1px solid rgba(255,255,255,0.2);
-        text-align: center;
-        margin: auto;
-        max-width: 600px;
-        color: white;
-    }
-
-    /* Ekranda Uçuşan Yazılar */
-    .moving-text {
-        position: fixed;
-        font-family: 'Pacifico', cursive;
-        font-size: 2.5rem;
-        color: rgba(255, 255, 255, 0.6);
-        z-index: 0;
-        white-space: nowrap;
-        animation: float 10s linear infinite;
-    }
-    
-    @keyframes float {
-        from { transform: translateX(100%) translateY(0vh) rotate(0deg); }
-        to { transform: translateX(-100%) translateY(100vh) rotate(360deg); }
-    }
-    
-    /* Kutlama İçerik Alanı */
-    .celebration-container {
-        text-align: center;
-        padding-top: 5vh;
-        z-index: 10;
-        position: relative;
-    }
-
-    /* Dev Neon Başlık */
-    .main-title {
-        font-family: 'Pacifico', cursive;
-        font-size: 10vw; /* Ekrana göre büyüyen font */
-        color: #fff;
-        text-shadow: 0 0 20px #ff00de, 0 0 30px #ff00de;
-        animation: pulse 2s infinite;
-        margin-bottom: 20px;
-    }
-
-    /* Mobilde Büyük Butonlar */
-    .stButton>button {
-        width: 100% !important;
-        height: 60px !important;
-        font-size: 1.2rem !important;
-        border-radius: 30px !important;
-        background: linear-gradient(90deg, #FF416C 0%, #FF4B2B 100%) !important;
-        color: white !important;
-        border: none !important;
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
+    .stApp { background-color: #0f0c29; color: white; text-align: center; }
+    .title { font-size: 5rem; font-family: 'Arial'; margin-top: 20vh; }
+    .stButton>button { width: 100%; height: 60px; font-size: 1.5rem; border-radius: 30px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- SAYFA MANTIĞI ---
-
-if not st.session_state.kutlama_basladi:
-    # --- GİRİŞ SAYFASI ---
-    st.write("") # Boşluk
-    st.write("")
-    st.markdown('<div class="intro-card">', unsafe_allow_html=True)
-    st.markdown("<h1>Hoş Geldin ✨</h1>", unsafe_allow_html=True)
-    st.markdown("<p>Bugün kutlanacak özel bir şey var...</p>", unsafe_allow_html=True)
-    
-    isim = st.text_input("", placeholder="İsmini buraya yazar mısın?", label_visibility="collapsed")
-    
-    if st.button("KUTLAMAYI AÇ 🎁"):
+# --- UYGULAMA ---
+if not st.session_state.kutlama:
+    st.markdown("<h1 class='title'>Sürprizi Açmaya Hazır mısın?</h1>", unsafe_allow_html=True)
+    isim = st.text_input("İsim Yazınız", placeholder="Örn: Utku")
+    if st.button("KUTLAMAYI BAŞLAT 🎉"):
         if isim:
             st.session_state.isim = isim
-            st.session_state.kutlama_basladi = True
+            st.session_state.kutlama = True
             st.rerun()
-        else:
-            st.warning("Lütfen bir isim gir.")
-    st.markdown('</div>', unsafe_allow_html=True)
-
 else:
-    # --- KUTLAMA SAYFASI ---
+    # KONFETİ BURADA TETİKLENİYOR
+    real_confetti() 
     
-    # 1. Efektler (Aşağıdan balonlar ve yukarıdan kar tanesi konfetiler)
-    st.balloons() # Aşağıdan yukarı balonlar
-    st.snow()     # Yukarıdan aşağı kar tanesi (Streamlit yerleşik)
-
-    # Arka planda uçuşan "Happy Birthday" yazıları
-    for i in range(10):
-        st.markdown(f'<div class="moving-text" style="top:{i*10}vh; left:{i*5}%; animation-delay:{i}s;">Happy Birthday {st.session_state.isim}! 🎂</div>', unsafe_allow_html=True)
-
-    # Ana İçerik
-    st.markdown('<div class="celebration-container">', unsafe_allow_html=True)
-    st.markdown(f'<h1 class="main-title">İyi ki Doğdun {st.session_state.isim}!</h1>', unsafe_allow_html=True)
+    st.markdown(f"<h1 class='title'>İYİ Kİ DOĞDUN <br>{st.session_state.isim.upper()}!</h1>", unsafe_allow_html=True)
     
-    # --- GİF BURAYA EKLENDİ (Tam İstediğin Yer) ---
+    # Gif'i tekrar ekliyoruz
     st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", use_column_width=True)
     
-    st.markdown(f'<h2 style="color:white; font-family:Poppins;">Yeni yaşın sana tüm güzellikleri getirsin!</h2>', unsafe_allow_html=True)
-    
-    # Boşluk ve Geri Dön Butonu
-    st.write("") 
-    if st.button("GERİ DÖN ↩️"):
-        st.session_state.kutlama_basladi = False
+    if st.button("Tekrar Konfeti Patlat! 🎊"):
         st.rerun()
         
-    st.markdown('</div>', unsafe_allow_html=True)
+    if st.button("Geri Dön"):
+        st.session_state.kutlama = False
+        st.rerun()
