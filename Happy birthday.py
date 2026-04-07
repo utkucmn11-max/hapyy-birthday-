@@ -121,7 +121,6 @@ else:
     # İçerik Alanı
     st.markdown(f'<div class="main-title">İyi ki Doğdun<br>{st.session_state.isim}!</div>', unsafe_allow_html=True)
     
-    st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", use_column_width=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
