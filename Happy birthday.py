@@ -11,7 +11,6 @@ if 'kutlama_basladi' not in st.session_state:
 # --- DEVASA CSS TASARIMI ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@900&display=swap');
     
     /* Arka Plan Animasyonu */
     .stApp {
