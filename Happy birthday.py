@@ -1,63 +1,83 @@
 import streamlit as st
-import streamlit.components.v1 as components
 
-# Sayfa Ayarları
-st.set_page_config(page_title="Mutlu Yıllar!", layout="wide")
+# Sayfa ayarları - Mobilde büyük görünmesi için
+st.set_page_config(page_title="İYİ Kİ DOĞDUN!", page_icon="🎂", layout="wide")
 
-if 'kutlama' not in st.session_state:
-    st.session_state.kutlama = False
+# Kutlama durumunu kontrol etme
+if 'kutlama_aktif' not in st.session_state:
+    st.session_state.kutlama_aktif = False
 
-# --- ÖZEL KONFETİ BİLEŞENİ ---
-# Bu fonksiyon, tarayıcının engellemeyeceği şekilde konfeti fırlatır
-def real_confetti():
-    confetti_js = """
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script>
-        function fire() {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
-            });
-        }
-        // Sayfa her yüklendiğinde ve buton tıklandığında çalışması için
-        setTimeout(fire, 100); 
-    </script>
-    """
-    # scrolling=False ve height=0.1 ile "This is content" yazısını tamamen yok ediyoruz
-    return components.html(confetti_js, height=0.1, scrolling=False)
-
-# --- TASARIM ---
+# --- ŞIK VE BÜYÜK TASARIM (CSS) ---
 st.markdown("""
     <style>
-    .stApp { background-color: #0f0c29; color: white; text-align: center; }
-    .title { font-size: 5rem; font-family: 'Arial'; margin-top: 20vh; }
-    .stButton>button { width: 100%; height: 60px; font-size: 1.5rem; border-radius: 30px; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap');
+    
+    .stApp {
+        background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
+        color: white;
+    }
+    
+    .dev-baslik {
+        font-family: 'Poppins', sans-serif;
+        font-size: 12vw;
+        text-align: center;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        margin-top: 20px;
+    }
+    
+    /* Mobilde Butonu Dev Yap */
+    .stButton>button {
+        width: 100% !important;
+        height: 80px !important;
+        font-size: 1.5rem !important;
+        font-weight: bold !important;
+        border-radius: 40px !important;
+        background-color: white !important;
+        color: #FF416C !important;
+        border: none !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+    }
+    
+    /* Streamlit yazılarını gizle */
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     </style>
     """, unsafe_allow_html=True)
 
-# --- UYGULAMA ---
-if not st.session_state.kutlama:
-    st.markdown("<h1 class='title'>Sürprizi Açmaya Hazır mısın?</h1>", unsafe_allow_html=True)
-    isim = st.text_input("İsim Yazınız", placeholder="Örn: Utku")
-    if st.button("KUTLAMAYI BAŞLAT 🎉"):
+# --- UYGULAMA AKIŞI ---
+
+if not st.session_state.kutlama_aktif:
+    # GİRİŞ EKRANI
+    st.markdown("<div style='text-align:center; padding-top:15vh;'>", unsafe_allow_html=True)
+    st.markdown("<h1 style='font-size:3rem;'>SANA BİR MESAJ VAR! 💌</h1>", unsafe_allow_html=True)
+    
+    isim = st.text_input("", placeholder="İsmini buraya yaz...", label_visibility="collapsed")
+    
+    if st.button("MESAJI AÇ! 🔥"):
         if isim:
             st.session_state.isim = isim
-            st.session_state.kutlama = True
+            st.session_state.kutlama_aktif = True
             st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
 else:
-    # KONFETİ BURADA TETİKLENİYOR
-    real_confetti() 
+    # KUTLAMA EKRANI (Hata verme ihtimali sıfır olan kısım)
     
-    st.markdown(f"<h1 class='title'>İYİ Kİ DOĞDUN <br>{st.session_state.isim.upper()}!</h1>", unsafe_allow_html=True)
+    # 1. Balonlar (Bu her cihazda kesin çalışır)
+    st.balloons()
     
-    # Gif'i tekrar ekliyoruz
+    # 2. Devasa İsim Yazısı
+    st.markdown(f'<div class="dev-baslik">İYİ Kİ DOĞDUN<br>{st.session_state.isim.upper()}!</div>', unsafe_allow_html=True)
+    
+    # 3. Dev Hareketli GIF (Kutlama gifi)
     st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", use_column_width=True)
     
-    if st.button("Tekrar Konfeti Patlat! 🎊"):
+    st.markdown("<h2 style='text-align:center;'>Yeni yaşın kutlu olsun! ✨</h2>", unsafe_allow_html=True)
+    
+    # Alt Butonlar
+    if st.button("TEKRAR BALON UÇUR! 🎈"):
         st.rerun()
         
-    if st.button("Geri Dön"):
-        st.session_state.kutlama = False
+    if st.button("BAŞA DÖN ↩️"):
+        st.session_state.kutlama_aktif = False
         st.rerun()
