@@ -116,7 +116,6 @@ else:
     st.markdown(f'<h1 class="main-title">{st.session_state.isim}!</h1>', unsafe_allow_html=True)
     
     # Dev Görsel
-    st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", use_column_width=True)
     
     st.markdown(f"<h1 style='color:white; font-size:3rem;'>İYİ Kİ DOĞDUN! 🎉</h1>", unsafe_allow_html=True)
     
