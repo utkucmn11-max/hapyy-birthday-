@@ -3,124 +3,161 @@ import streamlit.components.v1 as components
 import time
 
 # Sayfa ayarları
-st.set_page_config(page_title="Mutlu Yıllar!", page_icon="🎊", layout="wide")
+st.set_page_config(page_title="Mutlu Yıllar!", page_icon="🎉", layout="wide")
 
+# Session State kontrolü
 if 'kutlama_basladi' not in st.session_state:
     st.session_state.kutlama_basladi = False
 
-# --- ÖZEL KONFETİ VE TASARIM (CSS/JS) ---
-def konfeti_patlat():
-    # Bu JavaScript kodu ekrana gerçek renkli konfetiler yağdırır
-    components.html(
-        """
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-        <script>
-            var count = 200;
-            var defaults = { origin: { y: 0.7 } };
-
-            function fire(particleRatio, opts) {
-              confetti(Object.assign({}, defaults, opts, {
-                particleCount: Math.floor(count * particleRatio)
-              }));
-            }
-
-            fire(0.25, { spread: 26, startVelocity: 55 });
-            fire(0.2, { spread: 60 });
-            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-            fire(0.1, { spread: 120, startVelocity: 45 });
-        </script>
-        """,
-        height=0,
-    )
-
+# --- CSS TASARIMI ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700&display=swap');
     
     .stApp {
-        background: #0f0c29;
-        background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);
-        background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+    }
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
     .intro-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(15px);
-        padding: 50px;
-        border-radius: 40px;
-        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 60px;
+        border-radius: 30px;
+        border: 1px solid rgba(255,255,255,0.2);
         text-align: center;
-        margin: 100px auto;
-        max-width: 500px;
+        margin: auto;
+        max-width: 600px;
         color: white;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+
+    .moving-text {
+        position: fixed;
+        font-family: 'Pacifico', cursive;
+        font-size: 2.5rem;
+        color: rgba(255, 255, 255, 0.4);
+        z-index: 0;
+        white-space: nowrap;
+        animation: float 10s linear infinite;
+        pointer-events: none;
+    }
+    
+    @keyframes float {
+        from { transform: translateX(110%) translateY(0vh) rotate(0deg); }
+        to { transform: translateX(-110%) translateY(100vh) rotate(360deg); }
+    }
+    
+    .celebration-container {
+        text-align: center;
+        padding-top: 5vh;
+        z-index: 10;
+        position: relative;
     }
 
     .main-title {
         font-family: 'Pacifico', cursive;
-        font-size: 5rem;
-        background: linear-gradient(to right, #ff00cc, #3333ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: glow 2s ease-in-out infinite alternate;
+        font-size: 6rem;
+        color: #fff;
+        text-shadow: 0 0 20px #ff00de, 0 0 30px #ff00de;
+        animation: pulse 2s infinite;
     }
 
-    @keyframes glow {
-        from { filter: drop-shadow(0 0 10px #ff00cc); }
-        to { filter: drop-shadow(0 0 20px #3333ff); }
-    }
-
-    .flying-text {
-        position: fixed;
-        color: rgba(255,255,255,0.2);
-        font-size: 20px;
-        pointer-events: none;
-        white-space: nowrap;
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- MANTIK ---
+# --- GERÇEK KONFETİ FONKSİYONU ---
+def konfeti_yagdir():
+    # JavaScript ile gerçek renkli konfeti efekti
+    components.html(
+        """
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+        <script>
+            var end = Date.now() + (5 * 1000); // 5 saniye boyunca yağdır
+            var colors = ['#ff00de', '#ff4b4b', '#fdbb2d', '#ffffff', '#667eea'];
+
+            (function frame() {
+              confetti({
+                particleCount: 3,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: colors
+              });
+              confetti({
+                particleCount: 3,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: colors
+              });
+
+              if (Date.now() < end) {
+                requestAnimationFrame(frame);
+              }
+            }());
+        </script>
+        """,
+        height=0,
+    )
+
+# --- SAYFA MANTIĞI ---
 
 if not st.session_state.kutlama_basladi:
+    st.write("")
+    st.write("")
     st.markdown('<div class="intro-card">', unsafe_allow_html=True)
-    st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=100)
-    st.markdown("<h2 style='margin-bottom:20px;'>Doğum Günü Portalı</h2>", unsafe_allow_html=True)
+    st.markdown("<h1>Hoş Geldin ✨</h1>", unsafe_allow_html=True)
+    st.markdown("<p>Bugün kutlanacak özel bir şey var...</p>", unsafe_allow_html=True)
     
-    isim = st.text_input("", placeholder="Kimin ismi yazılsın?", label_visibility="collapsed")
+    isim = st.text_input("", placeholder="İsmini buraya yazar mısın?", label_visibility="collapsed")
     
-    if st.button("SÜRPRİZİ BAŞLAT 🎉"):
+    if st.button("KUTLAMAYI AÇ 🎁"):
         if isim:
             st.session_state.isim = isim
             st.session_state.kutlama_basladi = True
             st.rerun()
         else:
-            st.error("Lütfen bir isim yaz!")
+            st.warning("Lütfen bir isim gir.")
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # Sayfa açılır açılmaz konfeti ve balonları tetikle
-    konfeti_patlat()
+    # --- KUTLAMA SAYFASI ---
+    
+    # 1. Gerçek Konfetiler (Yukarıdan ve yanlardan renkli yağar)
+    konfeti_yagdir()
+    
+    # 2. Balonlar (Aşağıdan yukarı çıkar)
     st.balloons() 
 
-    # Ekranda uçuşan yazılar
-    for i in range(15):
-        st.markdown(f'<div class="flying-text" style="top:{i*7}%; left:{i*3}%; opacity:0.3;">HAPPY BIRTHDAY {st.session_state.isim.upper()}!</div>', unsafe_allow_html=True)
+    # Arka planda uçuşan yazılar
+    for i in range(10):
+        st.markdown(f'<div class="moving-text" style="top:{i*10}vh; left:{i*5}%; animation-delay:{i}s;">Happy Birthday {st.session_state.isim}! 🎂</div>', unsafe_allow_html=True)
 
-    # Ana İçerik Sayfası
-    st.markdown("<div style='text-align:center; padding-top:10vh;'>", unsafe_allow_html=True)
+    # Ana İçerik
+    st.markdown('<div class="celebration-container">', unsafe_allow_html=True)
     st.markdown(f'<h1 class="main-title">İyi ki Doğdun {st.session_state.isim}!</h1>', unsafe_allow_html=True)
     
-    # Çok daha "cana yakın" bir görsel
-    st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", width=500)
+    st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", width=600)
     
-    st.markdown(f"<h3 style='color:white; font-family:Poppins;'>{st.session_state.isim}, yeni yaşında her şey gönlünce olsun! 🚀</h3>", unsafe_allow_html=True)
+    st.markdown(f'<h2 style="color:white; font-family:Poppins;">{st.session_state.isim}, yeni yaşın sana tüm güzellikleri getirsin!</h2>', unsafe_allow_html=True)
     
-    if st.button("Tekrar Patlat! 🎊"):
-        st.rerun() # Sayfayı yenileyerek konfetileri tekrar atar
-
-    if st.button("Ana Sayfaya Dön"):
-        st.session_state.kutlama_basladi = False
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1,1,1])
+    with col2:
+        if st.button("Tekrar Patlat! 🎊"):
+            st.rerun()
+        if st.button("Başa Dön ↩️"):
+            st.session_state.kutlama_basladi = False
+            st.rerun()
+        
+    st.markdown('</div>', unsafe_allow_html=True)
