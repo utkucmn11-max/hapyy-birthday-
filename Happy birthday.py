@@ -106,7 +106,7 @@ else:
     # İçerik
     st.markdown(f'<div class="main-title">{st.session_state.isim}!</div>', unsafe_allow_html=True)
     
-    st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", use_column_width=True)
+    st.image("hhttps://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjN4eTBvcWJleXIwNGZla21tbWc5NHc5NTllcDl5c3VsbG90ZG4xOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rMsV3D1Fb7u2Va6KpC/giphy.gif", use_column_width=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
