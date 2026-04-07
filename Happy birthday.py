@@ -148,7 +148,7 @@ else:
     st.markdown('<div class="celebration-container">', unsafe_allow_html=True)
     st.markdown(f'<h1 class="main-title">İyi ki Doğdun {st.session_state.isim}!</h1>', unsafe_allow_html=True)
     
-    st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", width=600)
+    st.image(https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDFwMWNoc294Zml5OTM2MGh1aXY4cnp3aXQ1Mmdhc2c4bTZua2VlYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DXhmNiA8F1i4fLnMdb/giphy.gif, width=600)
     
     st.markdown(f'<h2 style="color:white; font-family:Poppins;">{st.session_state.isim}, yeni yaşın sana tüm güzellikleri getirsin!</h2>', unsafe_allow_html=True)
     
