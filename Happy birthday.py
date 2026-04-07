@@ -1,117 +1,141 @@
 import streamlit as st
-import streamlit.components.v1 as components
+import time
 
-# Sayfa ayarları
-st.set_page_config(page_title="DOĞUM GÜNÜ!", page_icon="🎂", layout="wide")
+# Sayfa ayarları - Mobilde büyük görünmesi için 'wide' düzen
+st.set_page_config(page_title="Mutlu Yıllar!", page_icon="🎉", layout="wide")
 
+# Session State ile sayfa kontrolü (Butona basınca sayfa değişimi için)
 if 'kutlama_basladi' not in st.session_state:
     st.session_state.kutlama_basladi = False
 
-# --- CSS VE TASARIM ---
+# --- CSS TASARIMI ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700&display=swap');
     
+    /* Hareketli Arka Plan */
     .stApp {
-        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
         background-size: 400% 400%;
-        animation: gradient 10s ease infinite;
+        animation: gradient 15s ease infinite;
+    }
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
+    /* Giriş Kartı - Mobilde Büyük */
+    .intro-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 50px;
+        border-radius: 30px;
+        border: 1px solid rgba(255,255,255,0.2);
+        text-align: center;
+        margin: auto;
+        max-width: 600px;
+        color: white;
+    }
+
+    /* Ekranda Uçuşan Yazılar */
+    .moving-text {
+        position: fixed;
+        font-family: 'Pacifico', cursive;
+        font-size: 2.5rem;
+        color: rgba(255, 255, 255, 0.6);
+        z-index: 0;
+        white-space: nowrap;
+        animation: float 10s linear infinite;
+    }
+    
+    @keyframes float {
+        from { transform: translateX(100%) translateY(0vh) rotate(0deg); }
+        to { transform: translateX(-100%) translateY(100vh) rotate(360deg); }
+    }
+    
+    /* Kutlama İçerik Alanı */
+    .celebration-container {
+        text-align: center;
+        padding-top: 5vh;
+        z-index: 10;
+        position: relative;
+    }
+
+    /* Dev Neon Başlık */
     .main-title {
         font-family: 'Pacifico', cursive;
-        font-size: 15vw;
+        font-size: 10vw; /* Ekrana göre büyüyen font */
         color: #fff;
-        text-shadow: 0 0 20px #ff00de;
-        text-align: center;
-        margin-top: 20px;
+        text-shadow: 0 0 20px #ff00de, 0 0 30px #ff00de;
+        animation: pulse 2s infinite;
+        margin-bottom: 20px;
     }
 
-    /* Mobilde Butonları Dev Yap */
+    /* Mobilde Büyük Butonlar */
     .stButton>button {
         width: 100% !important;
-        height: 70px !important;
-        font-size: 1.5rem !important;
-        border-radius: 35px !important;
+        height: 60px !important;
+        font-size: 1.2rem !important;
+        border-radius: 30px !important;
         background: linear-gradient(90deg, #FF416C 0%, #FF4B2B 100%) !important;
         color: white !important;
         border: none !important;
     }
 
-    /* Gereksiz yazıları gizle */
-    #MainMenu, footer, header {visibility: hidden;}
-    
-    /* Konfeti alanındaki 'This is content' yazısını gizlemek için */
-    iframe { border: none !important; }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- GARANTİ KONFETİ FONKSİYONU ---
-def konfeti_fiskirt():
-    # Bu script doğrudan çalışır ve kütüphaneyi güvenli kaynaktan çeker
-    js_code = """
-    <div id="confetti-container"></div>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script>
-        function startConfetti() {
-            var end = Date.now() + (7 * 1000);
-            var colors = ['#bb0000', '#ffffff', '#ff00de', '#00ffff'];
+# --- SAYFA MANTIĞI ---
 
-            (function frame() {
-              confetti({
-                particleCount: 4,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-                colors: colors
-              });
-              confetti({
-                particleCount: 4,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-                colors: colors
-              });
-
-              if (Date.now() < end) {
-                requestAnimationFrame(frame);
-              }
-            }());
-        }
-        // Sayfa yüklendiği an başlat
-        setTimeout(startConfetti, 100);
-    </script>
-    """
-    # height=0.1 yaparak hem görünmez kılıyoruz hem de çalışmasını sağlıyoruz
-    components.html(js_code, height=0.1)
-
-# --- UYGULAMA AKIŞI ---
 if not st.session_state.kutlama_basladi:
-    st.markdown("<div style='text-align:center; color:white; padding-top:10vh;'>", unsafe_allow_html=True)
-    st.markdown("<h1 style='font-size:3rem;'>HOŞ GELDİN! ✨</h1>", unsafe_allow_html=True)
-    isim = st.text_input("", placeholder="Kimin doğum günü?", label_visibility="collapsed")
-    if st.button("KUTLAMAYI AÇ! 🚀"):
+    # --- GİRİŞ SAYFASI ---
+    st.write("") # Boşluk
+    st.write("")
+    st.markdown('<div class="intro-card">', unsafe_allow_html=True)
+    st.markdown("<h1>Hoş Geldin ✨</h1>", unsafe_allow_html=True)
+    st.markdown("<p>Bugün kutlanacak özel bir şey var...</p>", unsafe_allow_html=True)
+    
+    isim = st.text_input("", placeholder="İsmini buraya yazar mısın?", label_visibility="collapsed")
+    
+    if st.button("KUTLAMAYI AÇ 🎁"):
         if isim:
             st.session_state.isim = isim
             st.session_state.kutlama_basladi = True
             st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+        else:
+            st.warning("Lütfen bir isim gir.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # Konfetiyi tetikle
-    konfeti_fiskirt()
-    st.balloons() # Aşağıdan yukarı balonlar her zaman çalışır
-
-    # İçerik
-    st.markdown(f'<div class="main-title">{st.session_state.isim}!</div>', unsafe_allow_html=True)
+    # --- KUTLAMA SAYFASI ---
     
+    # 1. Efektler (Aşağıdan balonlar ve yukarıdan kar tanesi konfetiler)
+    st.balloons() # Aşağıdan yukarı balonlar
+    st.snow()     # Yukarıdan aşağı kar tanesi (Streamlit yerleşik)
+
+    # Arka planda uçuşan "Happy Birthday" yazıları
+    for i in range(10):
+        st.markdown(f'<div class="moving-text" style="top:{i*10}vh; left:{i*5}%; animation-delay:{i}s;">Happy Birthday {st.session_state.isim}! 🎂</div>', unsafe_allow_html=True)
+
+    # Ana İçerik
+    st.markdown('<div class="celebration-container">', unsafe_allow_html=True)
+    st.markdown(f'<h1 class="main-title">İyi ki Doğdun {st.session_state.isim}!</h1>', unsafe_allow_html=True)
+    
+    # --- GİF BURAYA EKLENDİ (Tam İstediğin Yer) ---
     st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueXZueXJueXZueXJueXZueXJueXZueXJueXZueXJueXZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L95W4wv8nNbz072CC6/giphy.gif", use_column_width=True)
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(f'<h2 style="color:white; font-family:Poppins;">Yeni yaşın sana tüm güzellikleri getirsin!</h2>', unsafe_allow_html=True)
     
-    if st.button("TEKRAR PATLAT! 🎊"):
-        st.rerun()
-    
-    if st.button("GERİ DÖN"):
+    # Boşluk ve Geri Dön Butonu
+    st.write("") 
+    if st.button("GERİ DÖN ↩️"):
         st.session_state.kutlama_basladi = False
         st.rerun()
+        
+    st.markdown('</div>', unsafe_allow_html=True)
